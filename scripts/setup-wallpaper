@@ -1,0 +1,7 @@
+#!/bin/sh
+# Wallpaper setup script
+if [ -f "$HOME/.config/kreato/wallpaper" ]; then
+	plasma-apply-wallpaperimage "$(cat "$HOME/.config/kreato/wallpaper")"
+else
+	plasma-apply-wallpaperimage "$1/wallpapers/1293921.png"
+fi

@@ -1,0 +1,23 @@
+#!/bin/sh
+# Setup reload script
+#
+
+err() {
+	echo "ERROR: $@"
+	exit 1
+}
+
+cd "$(cat "$HOME/.config/kreato/setupdir")" || err "Please update the installation"
+
+case $1 in
+	"-w")
+		echo "Changing wallpaper"
+		if [ ! -f "$2" ]; then
+			err "Wallpaper does not exist"
+		else
+			echo "$(realpath $2)" > "$HOME/.config/kreato/wallpaper"
+		fi
+	;;
+esac
+
+ansible-playbook --ask-become-pass bootstrap.yml

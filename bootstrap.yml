@@ -1,0 +1,50 @@
+- name: Kreato's Setup
+  hosts: localhost
+
+  tasks:
+  - name: Install packages with apt
+    become: yes
+    ansible.builtin.apt:
+      name:
+        - git
+        - build-essential
+        - neovim
+        - emacs
+        - oxygen-icon-theme
+        - oxygen-cursor-theme
+        - plasma-theme-oxygen
+      state: present
+    when: ansible_distribution == "KDE neon"
+  
+  - name: Set Look and Feel to Oxygen
+    command: plasma-apply-lookandfeel --apply org.kde.oxygen
+    when: ansible_distribution == "KDE neon"
+
+  - name: Set Plasma Style to Oxygen
+    command: plasma-apply-desktoptheme oxygen
+    when: ansible_distribution == "KDE neon"
+
+  - name: Set color scheme to Oxygen
+    command: plasma-apply-colorscheme Oxygen
+    when: ansible_distribution == "KDE neon"
+
+  - name: Set wallpaper
+    command: "sh {{ playbook_dir }}/scripts/setup-wallpaper {{ playbook_dir }}"
+    when: ansible_distribution == "KDE neon"
+
+  - name: Install flatpaks
+    community.general.flatpak:
+      name:
+        - com.discordapp.Discord
+        - com.stremio.Stremio
+        - com.tutanota.Tutanota
+        - im.riot.Riot
+        - org.jitsi.jitsi-meet
+        - org.telegram.desktop
+
+  - name: Install setup-reload script
+    become: yes
+    ansible.builtin.copy:
+      src: "{{ playbook_dir }}/scripts/setup-reload"
+      dest: /usr/bin/setup-reload
+      mode: +x
